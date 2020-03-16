@@ -13,26 +13,26 @@ class ViewController: UIViewController {
     @IBOutlet weak var playerImageView: UIImageView!
     @IBOutlet weak var leftControlButton: UIButton!
     @IBOutlet weak var rightControlButton: UIButton!
+    var enemiesImageViews: [[UIImageView]] = [[UIImageView]]()
     
     var timer : Timer?
+    var game: Game?
     
-    var enemies: [[UIImageView]] = [[UIImageView]]()
-    
-    var enemyXDir :CGFloat = 1
-    var enemyYDir :CGFloat = 0
+    var enemiesXOffset: CGFloat = 1
+    var enemiesYOffset: CGFloat = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        createEnemies()
+        startGame()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        timer = Timer.scheduledTimer(timeInterval: 1/60, target: self, selector: #selector(draw), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1/60, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
     }
     
-    @objc func draw(){
+    @objc func drawObjects(){
         //drawPlayer()
         drawEnemies()
     }
@@ -49,7 +49,20 @@ class ViewController: UIViewController {
         }
     }
     
+    func startGame() {
+        loadGame()
+        createEnemies()
+    }
+    
+    func loadGame() {
+        // get data from user defaults and create Game instance
+        //game = Game(curLevel: <#T##Int#>, curScore: <#T##Int#>, bestScore: <#T##Int#>)
+    }
+    
     func createEnemies() {
+        
+        // here should be logic for enemy(game) levels if their number will increase
+        
         for i in 0...2 {
             var enemiesRow = [UIImageView]()
             for j in 0...5{
@@ -59,41 +72,42 @@ class ViewController: UIViewController {
                 enemiesRow.append(enemy)
                 view.addSubview(enemy)
             }
-            enemies.append(enemiesRow)
+            enemiesImageViews.append(enemiesRow)
         }
     }
     
     func drawEnemies() {
+        
+        // here should be logic for enemy(game) levels if their ms and fire rate will increase
+        
         //enemyAttack()
         
+        // enemies moves
+        
+        // x axis
         for i in 0...2 {
             for j in 0...5 {
-                enemies[i][j].frame.origin.x += enemyXDir
+                if (enemiesImageViews[i][j].frame.origin.x + enemiesImageViews[i][j].frame.width >= view.frame.width - 8) {
+                    enemiesXOffset = -1
+                    enemiesYOffset += view.frame.height * (1/40)
+                }else if (enemiesImageViews[i][j].frame.origin.x  <= 8) {
+                    enemiesXOffset = 1
+                    enemiesYOffset += view.frame.height * (1/40)
+                }
+                
+                enemiesImageViews[i][j].frame.origin.x += enemiesXOffset
             }
         }
         
-        for i in 0...2{
-            if enemies[i][0].frame.origin.x + enemies[i][0].frame.width >= view.frame.width {
-                enemyXDir = -1
-                enemyYDir += view.frame.width * (1/44)
-            }
-            if enemies[i][0].frame.origin.x  <= 0 {
-                enemyXDir = 1
-                enemyYDir += view.frame.width * (1/44)
+        // y axis
+        for i in 0...2 {
+            for j in 0...5 {
+                enemiesImageViews[i][j].frame.origin.y += enemiesYOffset
+                //enemiesImageViews[i][j].transform = CGAffineTransform(scaleX: enemiesXOffset, y: 1)
             }
         }
         
-//        for i in 0...2 {
-//            for j in 0...5 {
-//                enemies[i][j].frame.origin.y += enemyYDir
-//                enemies[i][j].transform = CGAffineTransform(scaleX: enemyXDir, y: 1)
-//            }
-//        }
-        enemyYDir = 0
-        
-        
+        enemiesYOffset = 0
     }
-
-
 }
 

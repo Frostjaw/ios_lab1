@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		85769918241FA0F500B1B43A /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85769917241FA0F500B1B43A /* Game.swift */; };
 		CF622887241B943200927045 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF622886241B943200927045 /* AppDelegate.swift */; };
 		CF622889241B943200927045 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF622888241B943200927045 /* ViewController.swift */; };
 		CF62288C241B943200927045 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF62288A241B943200927045 /* Main.storyboard */; };
 		CF62288E241B943800927045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF62288D241B943800927045 /* Assets.xcassets */; };
 		CF622891241B943800927045 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CF62288F241B943800927045 /* LaunchScreen.storyboard */; };
-		CF622899241BBA1B00927045 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF622898241BBA1B00927045 /* Player.swift */; };
-		CF62289B241BBB3700927045 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF62289A241BBB3700927045 /* Enemy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		85769917241FA0F500B1B43A /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		CF622883241B943200927045 /* ios_lab1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ios_lab1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF622886241B943200927045 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CF622888241B943200927045 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -24,8 +24,6 @@
 		CF62288D241B943800927045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CF622890241B943800927045 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CF622892241B943800927045 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CF622898241BBA1B00927045 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		CF62289A241BBB3700927045 /* Enemy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +62,7 @@
 				CF62288D241B943800927045 /* Assets.xcassets */,
 				CF62288F241B943800927045 /* LaunchScreen.storyboard */,
 				CF622892241B943800927045 /* Info.plist */,
-				CF622898241BBA1B00927045 /* Player.swift */,
-				CF62289A241BBB3700927045 /* Enemy.swift */,
+				85769917241FA0F500B1B43A /* Game.swift */,
 			);
 			path = ios_lab1;
 			sourceTree = "<group>";
@@ -141,9 +138,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF62289B241BBB3700927045 /* Enemy.swift in Sources */,
 				CF622889241B943200927045 /* ViewController.swift in Sources */,
-				CF622899241BBA1B00927045 /* Player.swift in Sources */,
+				85769918241FA0F500B1B43A /* Game.swift in Sources */,
 				CF622887241B943200927045 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

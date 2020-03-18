@@ -21,14 +21,11 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="t8d-NL-sZh">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="player_ship" translatesAutoresizingMaskIntoConstraints="NO" id="7Tq-al-bzH">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" image="player_ship" translatesAutoresizingMaskIntoConstraints="NO" id="7Tq-al-bzH">
                                 <rect key="frame" x="162.5" y="601" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="KYn-o6-VuF"/>
-                                    <constraint firstAttribute="width" constant="50" id="UHD-6U-qQS"/>
-                                </constraints>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghT-Xf-ZhQ">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghT-Xf-ZhQ">
                                 <rect key="frame" x="16" y="535" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="Pik-8O-92Q"/>
@@ -37,9 +34,10 @@
                                 <state key="normal" title="Button" image="left_arrow"/>
                                 <connections>
                                     <action selector="leftButtonTouchDown:" destination="BYZ-38-t0r" eventType="touchDown" id="HiY-bB-tiC"/>
+                                    <action selector="leftButtonTouchUp:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pf9-ki-Riv"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GDn-rd-o1N">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GDn-rd-o1N">
                                 <rect key="frame" x="309" y="535" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="Jec-Ob-Nfn"/>
@@ -48,19 +46,15 @@
                                 <state key="normal" title="Button" image="right_arrow"/>
                                 <connections>
                                     <action selector="rightButtonTouchDown:" destination="BYZ-38-t0r" eventType="touchDown" id="6B7-Ck-INz"/>
+                                    <action selector="rightButtonTouchUp:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QwJ-0y-qBD"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="t8d-NL-sZh" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="R16-2n-jFK"/>
-                            <constraint firstItem="7Tq-al-bzH" firstAttribute="top" secondItem="GDn-rd-o1N" secondAttribute="bottom" constant="16" id="asA-jn-fgV"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="7Tq-al-bzH" secondAttribute="bottom" constant="16" id="dZv-uD-4zf"/>
-                            <constraint firstItem="7Tq-al-bzH" firstAttribute="top" secondItem="ghT-Xf-ZhQ" secondAttribute="bottom" constant="16" id="gI9-wM-0Qa"/>
                             <constraint firstItem="t8d-NL-sZh" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="s2J-f9-Pq9"/>
                             <constraint firstItem="ghT-Xf-ZhQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="u5p-Ci-yX6"/>
-                            <constraint firstItem="7Tq-al-bzH" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="vIe-bt-dE3"/>
-                            <constraint firstItem="7Tq-al-bzH" firstAttribute="centerX" secondItem="t8d-NL-sZh" secondAttribute="centerX" id="vuZ-1U-eYv"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GDn-rd-o1N" secondAttribute="trailing" constant="16" id="xqx-v5-CHP"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

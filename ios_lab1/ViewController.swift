@@ -20,12 +20,22 @@ class ViewController: UIViewController {
     
     var enemiesXOffset: CGFloat = 1
     var enemiesYOffset: CGFloat = 0
+    var playerXOffset: CGFloat = 0
+    var playerMovementSpeed: CGFloat = 5
+    
+    var playerBulletsImageViews = [UIImageView]()
+    var playerAttackCD = 30
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         startGame()
+        
+        //test
+        let const = CGRect(x: view.frame.width * 0.4 , y: view.frame.height - 0.2 * view.frame.width - (1/11) * view.frame.width, width: 0.2 * view.frame.width , height:  0.2 * view.frame.width)
+        
+        playerImageView.frame = const
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,20 +43,24 @@ class ViewController: UIViewController {
     }
     
     @objc func drawObjects(){
-        //drawPlayer()
+        drawPlayer()
         drawEnemies()
     }
     
     @IBAction func leftButtonTouchDown(_ sender: Any) {
-        if (playerImageView.frame.origin.x >= 16){
-            playerImageView.frame.origin.x -= 10
-        }
+        playerXOffset = -1 * playerMovementSpeed
+    }
+    
+    @IBAction func leftButtonTouchUp(_ sender: Any) {
+        playerXOffset = 0
     }
     
     @IBAction func rightButtonTouchDown(_ sender: Any) {
-        if (playerImageView.frame.origin.x <= view.frame.maxX - playerImageView.frame.width - 16){
-            playerImageView.frame.origin.x += 10
-        }
+        playerXOffset = 1 * playerMovementSpeed
+    }
+    
+    @IBAction func rightButtonTouchUp(_ sender: Any) {
+        playerXOffset = 0
     }
     
     func startGame() {
@@ -76,6 +90,15 @@ class ViewController: UIViewController {
         }
     }
     
+    func drawPlayer(){
+        // movement
+        if ((playerImageView.frame.origin.x + playerXOffset > 8) && (playerImageView.frame.origin.x + playerXOffset + playerImageView.frame.width < view.frame.width - 8)){
+            playerImageView.frame.origin.x += playerXOffset
+        }
+        playerAttackCD += 1
+        attack()
+    }
+    
     func drawEnemies() {
         
         // here should be logic for enemy(game) levels if their ms and fire rate will increase
@@ -87,15 +110,20 @@ class ViewController: UIViewController {
         // x axis
         for i in 0...2 {
             for j in 0...5 {
+                enemiesImageViews[i][j].frame.origin.x += enemiesXOffset
+            }
+        }
+        
+        // checks
+        for i in 0...2 {
+            for j in 0...5 {
                 if (enemiesImageViews[i][j].frame.origin.x + enemiesImageViews[i][j].frame.width >= view.frame.width - 8) {
                     enemiesXOffset = -1
-                    enemiesYOffset += view.frame.height * (1/40)
+                    enemiesYOffset += view.frame.height * (1/300)
                 }else if (enemiesImageViews[i][j].frame.origin.x  <= 8) {
                     enemiesXOffset = 1
-                    enemiesYOffset += view.frame.height * (1/40)
+                    enemiesYOffset += view.frame.height * (1/300)
                 }
-                
-                enemiesImageViews[i][j].frame.origin.x += enemiesXOffset
             }
         }
         
@@ -108,6 +136,29 @@ class ViewController: UIViewController {
         }
         
         enemiesYOffset = 0
+    }
+    
+    func attack() {
+        
+        // test
+        let playerFireRate = 30
+        
+        if playerAttackCD > playerFireRate {
+            let myView = CGRect(x: playerImageView.frame.origin.x + playerImageView.frame.width * 0.45, y: playerImageView.frame.origin.y - playerImageView.frame.height * 0.3, width: playerImageView.frame.width * 0.1, height: playerImageView.frame.height * 0.5)
+            let newPlayerBullet = UIImageView(frame: myView)
+            newPlayerBullet.image = #imageLiteral(resourceName: "playerBullet")
+            view.addSubview(newPlayerBullet)
+            playerBulletsImageViews.append(newPlayerBullet)
+            playerAttackCD = 0
+        }
+        
+        outer: for (number, item) in playerBulletsImageViews.enumerated(){
+            item.frame.origin.y -= 10
+            if item.frame.origin.y < -100 {
+                playerBulletsImageViews[number].removeFromSuperview()
+                playerBulletsImageViews.remove(at: number)
+            }
+        }
     }
 }
 

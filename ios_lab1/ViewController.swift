@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     
     var timer : Timer?
     var game: Game?
+    var t: Int?
     
     var enemiesXOffset: CGFloat = 1
     var enemiesYOffset: CGFloat = 0

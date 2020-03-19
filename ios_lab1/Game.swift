@@ -19,4 +19,9 @@ class Game {
         self.curScore = curScore
         self.bestScore = bestScore
     }
+    
+    func save(){
+        UserDefaults.standard.set(curScore, forKey: "score")
+        UserDefaults.standard.set(curLevel, forKey: "level")
+    }
 }

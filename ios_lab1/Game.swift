@@ -24,4 +24,17 @@ class Game {
         UserDefaults.standard.set(curScore, forKey: "score")
         UserDefaults.standard.set(curLevel, forKey: "level")
     }
+    
+    func saveBestScore(){
+        let bestScore = UserDefaults.standard.integer(forKey: "bestScore")
+        if (self.bestScore > bestScore){
+            UserDefaults.standard.set(bestScore, forKey: "bestScore")
+        }
+    }
+    
+    func killPlayer(){
+        saveBestScore()
+        self.curLevel = 1
+        self.curScore = 0
+    }
 }

@@ -33,6 +33,9 @@ class Game {
     }
     
     func killPlayer(){
+        if (self.curScore > self.bestScore){
+            self.bestScore = self.curScore
+        }
         saveBestScore()
         self.curLevel = 1
         self.curScore = 0

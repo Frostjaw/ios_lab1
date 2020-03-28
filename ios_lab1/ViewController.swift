@@ -45,11 +45,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        restartGame()
+        launchGame()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        timer = Timer.scheduledTimer(timeInterval: screenRefreshRate, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
+        startTimer()
     }
     
     @objc func drawObjects(){
@@ -74,11 +74,17 @@ class ViewController: UIViewController {
     }
     
     @IBAction func deathLabelButtonTouchDown(_ sender: Any) {
-        
         deathLabelButton.isHidden = true
-        clearScreen()
         restartGame()
-        
+        startTimer()
+    }
+    
+    func cancelTimer(){
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    func startTimer(){
         timer = Timer.scheduledTimer(timeInterval: screenRefreshRate, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
     }
     
@@ -93,14 +99,29 @@ class ViewController: UIViewController {
         enemiesImageViews.removeAll()
     }
     
-    func restartGame(){
+    func launchGame(){
         loadGameData()
+        startGame()
+    }
+    
+    func restartGame(){
+        clearScreen()
         startGame()
     }
     
     func startGame() {
         loadPlayer()
         loadEnemies()
+    }
+    
+    func increaseLevel(){
+        cancelTimer()
+        game.curLevel += 1
+        curLevelTextField.text = String(game.curLevel)
+        game.save()
+        clearScreen()
+        startGame()
+        startTimer()
     }
     
     func loadGameData() {
@@ -116,7 +137,7 @@ class ViewController: UIViewController {
         curLevelTextField.text = String(game.curLevel)
         game.curScore = defaults.integer(forKey: "score")
         game.bestScore = defaults.integer(forKey: "bestScore")
-        bestScoreTextField.text = String(game.bestScore)
+        bestScoreTextField.text = String(defaults.integer(forKey: "bestScore"))
     }
     
     func loadPlayer(){
@@ -260,10 +281,7 @@ class ViewController: UIViewController {
                             aliveEnemies -= 1
                             
                             if aliveEnemies == 0 {
-                                timer?.invalidate()
-                                game.curLevel += 1
-                                game.save()
-                                startGame()
+                                increaseLevel()
                                 break outer
                             }
                             break inner
@@ -298,7 +316,7 @@ class ViewController: UIViewController {
         game.killPlayer()
         bestScoreTextField.text = String(game.bestScore)
         deathLabelButton.isHidden = false
-        timer?.invalidate()
+        cancelTimer()
      }
     
 }

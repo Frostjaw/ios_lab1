@@ -18,7 +18,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var curLevelTextField: UITextField!
     @IBOutlet weak var deathLabelButton: UIButton!
     
-    
     // global
     let screenRefreshRate: Double = 1/60
     var timer: Timer?
@@ -52,11 +51,6 @@ class ViewController: UIViewController {
         startTimer()
     }
     
-    @objc func drawObjects(){
-        drawPlayer()
-        drawEnemies()
-    }
-    
     @IBAction func leftButtonTouchDown(_ sender: Any) {
         playerXOffset = -1 * playerMovementSpeed
     }
@@ -79,49 +73,36 @@ class ViewController: UIViewController {
         startTimer()
     }
     
+    // timer
+    func startTimer(){
+        timer = Timer.scheduledTimer(timeInterval: screenRefreshRate, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
+    }
+    
     func cancelTimer(){
         timer?.invalidate()
         timer = nil
     }
     
-    func startTimer(){
-        timer = Timer.scheduledTimer(timeInterval: screenRefreshRate, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
+    @objc func drawObjects(){
+        drawPlayer()
+        drawEnemies()
     }
     
-    func clearScreen(){
-        
-        for i in 0...2{
-            for j in 0...5{
-                enemiesImageViews[i][j].removeFromSuperview()
-            }
-        }
-        
-        enemiesImageViews.removeAll()
-    }
-    
+    // game
     func launchGame(){
         loadGameData()
         startGame()
     }
     
-    func restartGame(){
-        clearScreen()
-        startGame()
-    }
-    
     func startGame() {
+        updateLabels()
         loadPlayer()
         loadEnemies()
     }
     
-    func increaseLevel(){
-        cancelTimer()
-        game.curLevel += 1
-        curLevelTextField.text = String(game.curLevel)
-        game.save()
+    func restartGame(){
         clearScreen()
         startGame()
-        startTimer()
     }
     
     func loadGameData() {
@@ -134,123 +115,58 @@ class ViewController: UIViewController {
         }else{
             game.curLevel = curLevel
         }
-        curLevelTextField.text = String(game.curLevel)
         game.curScore = defaults.integer(forKey: "score")
         game.bestScore = defaults.integer(forKey: "bestScore")
-        bestScoreTextField.text = String(defaults.integer(forKey: "bestScore"))
     }
     
+    func clearScreen(){
+        for i in 0...enemiesImageViews.count - 1{
+            for j in 0...enemiesImageViews[0].count - 1{
+                enemiesImageViews[i][j].removeFromSuperview()
+            }
+        }
+        enemiesImageViews.removeAll()
+    }
+    
+    func updateLabels(){
+        curScoreTextField.text = String(game.curScore)
+        curLevelTextField.text = String(game.curLevel)
+        bestScoreTextField.text = String(game.bestScore)
+    }
+    
+    func increaseLevel(){
+        cancelTimer()
+        game.curLevel += 1
+        game.save()
+        clearScreen()
+        startGame()
+        startTimer()
+    }
+    
+    // player
     func loadPlayer(){
         // position
-        playerImageView.frame = CGRect(x: view.frame.width * 0.45 , y: view.frame.height - 100, width: 50 , height:  50)
+        playerImageView.frame = CGRect(x: view.frame.width / 2 - playerImageView.frame.width / 2 , y: view.frame.height - 75, width: 50 , height:  50)
         
-        // player settings
-        playerAttackCoolDown = Int(screenRefreshRate * 60.0 / 2.0)
-        playerFireRate = 30
-    }
-    
-    func loadEnemies() {
-        for i in 0...2 {
-            var enemiesRow = [UIImageView]()
-            for j in 0...5{
-                let enemy = UIImageView(image: #imageLiteral(resourceName: "enemy"))
-                let enemyCGRect = CGRect(x: view.frame.width * (1/6) + CGFloat(j*50), y: view.frame.width * (1/7) + CGFloat(i*50) + CGFloat(50), width: view.frame.width * (1/10), height: view.frame.width * (1/10))
-                enemy.frame = enemyCGRect
-                enemiesRow.append(enemy)
-                view.addSubview(enemy)
-            }
-            enemiesImageViews.append(enemiesRow)
-        }
-        
-        enemiesAttackCoolDown = 50
-        aliveEnemies = enemiesImageViews[0].count * enemiesImageViews.count
+        // properties
+        playerFireRate = Int ((1 / screenRefreshRate) / 2)
     }
     
     func drawPlayer(){
         // movement
-        if ((playerImageView.frame.origin.x + playerXOffset > 8) && (playerImageView.frame.origin.x + playerXOffset + playerImageView.frame.width < view.frame.width - 8)){
+        if ((playerImageView.frame.origin.x + playerXOffset > 8) && (playerImageView.frame.origin.x + playerImageView.frame.width + playerXOffset < view.frame.width - 8)){
             playerImageView.frame.origin.x += playerXOffset
         }
         
         // attack
         playerAttack()
-        playerAttackCoolDown += 1
-    }
-    
-    func drawEnemies() {
-        
-        // here should be logic for enemy(game) levels if their ms and fire rate will increase
-        
-        enemyAttack()
-        
-        // enemies movements (!!!hardcoded indexes)
-        
-        // x axis
-        for i in 0...2 {
-            for j in 0...5 {
-                enemiesImageViews[i][j].frame.origin.x += enemiesXOffset
-            }
-        }
-        
-        // checks
-        if (enemiesImageViews[0][5].frame.origin.x + enemiesImageViews[0][5].frame.width >= view.frame.width - 8) {
-            enemiesXOffset = -1
-            enemiesYOffset += view.frame.height * (1/300)
-        }else if (enemiesImageViews[0][0].frame.origin.x  <= 8) {
-            enemiesXOffset = 1
-            enemiesYOffset += view.frame.height * (1/300)
-        }
-        
-        // y axis
-        for i in 0...2 {
-            for j in 0...5 {
-                enemiesImageViews[i][j].frame.origin.y += enemiesYOffset
-                //enemiesImageViews[i][j].transform = CGAffineTransform(scaleX: enemiesXOffset, y: 1)
-            }
-        }
-        
-        enemiesYOffset = 0
-    }
-    
-    func enemyAttack(){
-        enemiesAttackCoolDown += 1
-
-        if (enemiesAttackCoolDown >= 60) {
-            // choose random alive enemy
-            var randomYIndex = Int.random(in: 0...2)
-            var randomXIndex = Int.random(in: 0...5)
-            var randomEnemy = enemiesImageViews[randomYIndex][randomXIndex]
-            while (randomEnemy.isHidden) {
-                randomYIndex = Int.random(in: 0...2)
-                randomXIndex = Int.random(in: 0...5)
-                randomEnemy = enemiesImageViews[randomYIndex][randomXIndex]
-            }
-            
-            // create bullet
-            let enemyBulletCGRect = CGRect(x: randomEnemy.frame.origin.x + randomEnemy.frame.width * 0.45, y: randomEnemy.frame.origin.y + randomEnemy.frame.height, width: randomEnemy.frame.width * 0.5, height: randomEnemy.frame.height * 0.5)
-            let enemyBullet = UIImageView(frame: enemyBulletCGRect)
-            enemyBullet.image = #imageLiteral(resourceName: "enemyBullet")
-            view.addSubview(enemyBullet)
-            enemiesBulletsImageViews.append(enemyBullet)
-            enemiesAttackCoolDown = 0
-        }
-
-        // bullets movements
-        for (index, bullet) in enemiesBulletsImageViews.enumerated() {
-            bullet.frame.origin.y += 5
-            if (bullet.frame.origin.y > view.frame.height + bullet.frame.height) {
-                enemiesBulletsImageViews[index].removeFromSuperview()
-                enemiesBulletsImageViews.remove(at: index)
-            }
-        }
-        
-        checkForPlayerDeath()
-        
     }
     
     func playerAttack() {
-        if (playerAttackCoolDown > playerFireRate) {
-            let playerBulletCGRect = CGRect(x: playerImageView.frame.origin.x + playerImageView.frame.width * 0.3, y: playerImageView.frame.origin.y - playerImageView.frame.height * 0.3, width: playerImageView.frame.width * 0.5, height: playerImageView.frame.height * 0.5)
+        playerAttackCoolDown += 1
+        
+        if (playerAttackCoolDown >= playerFireRate) {
+            let playerBulletCGRect = CGRect(x: playerImageView.frame.origin.x + playerImageView.frame.width / 4, y: playerImageView.frame.origin.y, width: playerImageView.frame.width / 2, height: playerImageView.frame.height / 2)
             let newPlayerBullet = UIImageView(frame: playerBulletCGRect)
             newPlayerBullet.image = #imageLiteral(resourceName: "playerBullet")
             view.addSubview(newPlayerBullet)
@@ -262,16 +178,16 @@ class ViewController: UIViewController {
     }
     
     func checkForEnemyDeath(){
-        let bottomEnemyRowPosition = enemiesImageViews[2][0].frame.origin.y + enemiesImageViews[2][0].frame.height
+        let bottomEnemyRowPosition = enemiesImageViews[enemiesImageViews.count - 1][0].frame.origin.y + enemiesImageViews[enemiesImageViews.count - 1][0].frame.height
         
         outer: for (index, bullet) in playerBulletsImageViews.enumerated(){
             bullet.frame.origin.y -= 10
-            if (bullet.frame.origin.y < -100) {
+            if (bullet.frame.origin.y + bullet.frame.height < 0) {
                 playerBulletsImageViews[index].removeFromSuperview()
                 playerBulletsImageViews.remove(at: index)
             } else if (bullet.frame.origin.y <= bottomEnemyRowPosition){
-                inner : for i in 0...2 {
-                    for j in 0...5 {
+                inner : for i in 0...enemiesImageViews.count - 1 {
+                    for j in 0...enemiesImageViews[0].count - 1 {
                         if (bullet.frame.intersects(enemiesImageViews[i][j].frame) && enemiesImageViews[i][j].isHidden == false) {
                             playerBulletsImageViews[index].removeFromSuperview()
                             playerBulletsImageViews.remove(at: index)
@@ -293,31 +209,118 @@ class ViewController: UIViewController {
         
     }
     
-    func checkForPlayerDeath() {
-         
-        // player and bottom enemy row intersect
-        if (enemiesImageViews[2][0].frame.origin.y + enemiesImageViews[2][0].frame.height > playerImageView.frame.origin.y) {
-            die()
-        }
-
-        for (index, bullet) in enemiesBulletsImageViews.enumerated() {
-            // check for intersect only near player
-            if (bullet.frame.origin.y + bullet.frame.height - 8 > playerImageView.frame.origin.y){
-                if (bullet.frame.intersects(playerImageView.frame)) {
-                    enemiesBulletsImageViews[index].removeFromSuperview()
-                    enemiesBulletsImageViews.remove(at: index)
-                    die()
-                }
-            }
-        }
-     }
-    
-    func die() {
+    func killPlayer() {
         game.killPlayer()
-        bestScoreTextField.text = String(game.bestScore)
         deathLabelButton.isHidden = false
         cancelTimer()
-     }
+    }
+    
+    // enemies
+    func loadEnemies() {
+        // !!! hardcoded size of array
+        for i in 0...2 {
+            var enemiesRow = [UIImageView]()
+            for j in 0...5{
+                let enemy = UIImageView(image: #imageLiteral(resourceName: "enemy"))
+                let enemyCGRect = CGRect(x: view.frame.width / 6 + CGFloat(j*50), y: view.frame.width / 7 + CGFloat(i*50) + CGFloat(25), width: view.frame.width / 10, height: view.frame.width / 10)
+                enemy.frame = enemyCGRect
+                enemiesRow.append(enemy)
+                view.addSubview(enemy)
+            }
+            enemiesImageViews.append(enemiesRow)
+        }
+        
+        // properties
+        enemiesFireRate = Int((1 / screenRefreshRate) / 2 + 20)
+        aliveEnemies = enemiesImageViews[0].count * enemiesImageViews.count
+    }
+    
+    func drawEnemies() {
+        // enemies movements
+        
+        // x axis
+        for enemyRow in enemiesImageViews{
+            for enemy in enemyRow{
+                enemy.frame.origin.x += enemiesXOffset
+            }
+        }
+        
+        // constraints
+        if (enemiesImageViews[0][enemiesImageViews[0].count - 1].frame.origin.x + enemiesImageViews[0][enemiesImageViews[0].count - 1].frame.width >= view.frame.width - 8) {
+            enemiesXOffset = -1
+            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * game.curLevel)
+        }else if (enemiesImageViews[0][0].frame.origin.x  <= 8) {
+            enemiesXOffset = 1
+            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * game.curLevel)
+        }
+        
+        // y axis
+        for enemyRow in enemiesImageViews{
+            for enemy in enemyRow{
+                enemy.frame.origin.y += enemiesYOffset
+                //enemy.transform = CGAffineTransform(scaleX: enemiesXOffset, y: 1)
+            }
+        }
+        enemiesYOffset = 0
+        
+        // attack
+        enemyAttack()
+    }
+    
+    func enemyAttack(){
+        enemiesAttackCoolDown += 1
+
+        if (enemiesAttackCoolDown >= enemiesFireRate) {
+            // choose random alive enemy
+            var randomYIndex = Int.random(in: 0...2)
+            var randomXIndex = Int.random(in: 0...5)
+            var randomEnemy = enemiesImageViews[randomYIndex][randomXIndex]
+            while (randomEnemy.isHidden) {
+                randomYIndex = Int.random(in: 0...2)
+                randomXIndex = Int.random(in: 0...5)
+                randomEnemy = enemiesImageViews[randomYIndex][randomXIndex]
+            }
+            
+            // create bullet
+            let enemyBulletCGRect = CGRect(x: randomEnemy.frame.origin.x + randomEnemy.frame.width / 4, y: randomEnemy.frame.origin.y + randomEnemy.frame.height, width: randomEnemy.frame.width / 2, height: randomEnemy.frame.height / 2)
+            let enemyBullet = UIImageView(frame: enemyBulletCGRect)
+            enemyBullet.image = #imageLiteral(resourceName: "enemyBullet")
+            view.addSubview(enemyBullet)
+            enemiesBulletsImageViews.append(enemyBullet)
+            enemiesAttackCoolDown = 0
+        }
+
+        // bullets movements
+        for (index, bullet) in enemiesBulletsImageViews.enumerated() {
+            bullet.frame.origin.y += 5
+            if (bullet.frame.origin.y + bullet.frame.height > view.frame.height) {
+                enemiesBulletsImageViews[index].removeFromSuperview()
+                enemiesBulletsImageViews.remove(at: index)
+            }
+        }
+        
+        checkForPlayerDeath()
+        
+    }
+    
+    func checkForPlayerDeath() {
+        
+       // player and bottom enemy row intersect
+       if (enemiesImageViews[enemiesImageViews.count - 1][0].frame.origin.y + enemiesImageViews[enemiesImageViews.count - 1][0].frame.height > playerImageView.frame.origin.y) {
+           killPlayer()
+       }
+
+       for (index, bullet) in enemiesBulletsImageViews.enumerated() {
+           // check for intersect only near player
+           if (bullet.frame.origin.y + bullet.frame.height > playerImageView.frame.origin.y - 8){
+               if (bullet.frame.intersects(playerImageView.frame)) {
+                   enemiesBulletsImageViews[index].removeFromSuperview()
+                   enemiesBulletsImageViews.remove(at: index)
+                   killPlayer()
+               }
+           }
+       }
+    }
     
 }
 

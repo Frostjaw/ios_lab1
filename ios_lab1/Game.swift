@@ -39,5 +39,6 @@ class Game {
         saveBestScore()
         self.curLevel = 1
         self.curScore = 0
+        save()
     }
 }

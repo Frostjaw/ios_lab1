@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Game {
+class GameManager {
     
     var curLevel: Int
     var curScore: Int

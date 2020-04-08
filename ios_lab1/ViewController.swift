@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     // global
     let screenRefreshRate: Double = 1/60
     var timer: Timer?
-    var game = Game(curLevel: 0, curScore: 0, bestScore: 0)
+    var gameManager = GameManager(curLevel: 0, curScore: 0, bestScore: 0)
     
     // enemies
     var enemiesImageViews = [[UIImageView]]()
@@ -111,12 +111,12 @@ class ViewController: UIViewController {
         // check for first launch
         let curLevel = defaults.integer(forKey: "curLevel")
         if (curLevel == 0){
-            game.curLevel = 1
+            gameManager.curLevel = 1
         }else{
-            game.curLevel = curLevel
+            gameManager.curLevel = curLevel
         }
-        game.curScore = defaults.integer(forKey: "curScore")
-        game.bestScore = defaults.integer(forKey: "bestScore")
+        gameManager.curScore = defaults.integer(forKey: "curScore")
+        gameManager.bestScore = defaults.integer(forKey: "bestScore")
     }
     
     func clearScreen(){
@@ -129,15 +129,15 @@ class ViewController: UIViewController {
     }
     
     func updateLabels(){
-        curScoreTextField.text = String(game.curScore)
-        curLevelTextField.text = String(game.curLevel)
-        bestScoreTextField.text = String(game.bestScore)
+        curScoreTextField.text = String(gameManager.curScore)
+        curLevelTextField.text = String(gameManager.curLevel)
+        bestScoreTextField.text = String(gameManager.bestScore)
     }
     
     func increaseLevel(){
         cancelTimer()
-        game.curLevel += 1
-        game.save()
+        gameManager.curLevel += 1
+        gameManager.save()
         clearScreen()
         startGame()
         startTimer()
@@ -192,8 +192,8 @@ class ViewController: UIViewController {
                             playerBulletsImageViews[index].removeFromSuperview()
                             playerBulletsImageViews.remove(at: index)
                             enemiesImageViews[i][j].isHidden = true
-                            game.curScore += game.curLevel * killPoints
-                            curScoreTextField.text = String(game.curScore)
+                            gameManager.curScore += gameManager.curLevel * killPoints
+                            curScoreTextField.text = String(gameManager.curScore)
                             aliveEnemies -= 1
                             
                             if aliveEnemies == 0 {
@@ -210,7 +210,7 @@ class ViewController: UIViewController {
     }
     
     func killPlayer() {
-        game.killPlayer()
+        gameManager.killPlayer()
         deathLabelButton.isHidden = false
         cancelTimer()
     }
@@ -248,10 +248,10 @@ class ViewController: UIViewController {
         // constraints
         if (enemiesImageViews[0][enemiesImageViews[0].count - 1].frame.origin.x + enemiesImageViews[0][enemiesImageViews[0].count - 1].frame.width >= view.frame.width - 8) {
             enemiesXOffset = -1
-            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * game.curLevel)
+            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * gameManager.curLevel)
         }else if (enemiesImageViews[0][0].frame.origin.x  <= 8) {
             enemiesXOffset = 1
-            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * game.curLevel)
+            enemiesYOffset = view.frame.height / CGFloat(80 - 10 * gameManager.curLevel)
         }
         
         // y axis

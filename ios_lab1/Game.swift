@@ -21,14 +21,14 @@ class Game {
     }
     
     func save(){
-        UserDefaults.standard.set(curScore, forKey: "score")
-        UserDefaults.standard.set(curLevel, forKey: "level")
+        UserDefaults.standard.set(curScore, forKey: "curScore")
+        UserDefaults.standard.set(curLevel, forKey: "curLevel")
     }
     
     func saveBestScore(){
         let bestScore = UserDefaults.standard.integer(forKey: "bestScore")
         if (self.bestScore > bestScore){
-            UserDefaults.standard.set(bestScore, forKey: "bestScore")
+            UserDefaults.standard.set(self.bestScore, forKey: "bestScore")
         }
     }
     

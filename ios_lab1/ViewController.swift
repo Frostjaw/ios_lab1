@@ -109,13 +109,13 @@ class ViewController: UIViewController {
         // get data from user defaults
         let defaults = UserDefaults.standard
         // check for first launch
-        let curLevel = defaults.integer(forKey: "level")
+        let curLevel = defaults.integer(forKey: "curLevel")
         if (curLevel == 0){
             game.curLevel = 1
         }else{
             game.curLevel = curLevel
         }
-        game.curScore = defaults.integer(forKey: "score")
+        game.curScore = defaults.integer(forKey: "curScore")
         game.bestScore = defaults.integer(forKey: "bestScore")
     }
     

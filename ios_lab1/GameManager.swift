@@ -32,7 +32,7 @@ class GameManager {
         }
     }
     
-    func killPlayer(){
+    func restartGame(){
         if (self.curScore > self.bestScore){
             self.bestScore = self.curScore
         }

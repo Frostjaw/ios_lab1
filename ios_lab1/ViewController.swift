@@ -74,6 +74,7 @@ class ViewController: UIViewController {
     }
     
     // timer
+    // !!! rendering without gameloop (hardcoded refresh rate)
     func startTimer(){
         timer = Timer.scheduledTimer(timeInterval: screenRefreshRate, target: self, selector: #selector(drawObjects), userInfo: nil, repeats: true)
     }
@@ -210,8 +211,8 @@ class ViewController: UIViewController {
     }
     
     func killPlayer() {
-        gameManager.killPlayer()
         deathLabelButton.isHidden = false
+        gameManager.restartGame()
         cancelTimer()
     }
     
@@ -258,7 +259,6 @@ class ViewController: UIViewController {
         for enemyRow in enemiesImageViews{
             for enemy in enemyRow{
                 enemy.frame.origin.y += enemiesYOffset
-                //enemy.transform = CGAffineTransform(scaleX: enemiesXOffset, y: 1)
             }
         }
         enemiesYOffset = 0

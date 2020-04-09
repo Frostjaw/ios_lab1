@@ -91,7 +91,7 @@ class ViewController: UIViewController {
     
     // game
     func launchGame(){
-        loadGameData()
+        gameManager.loadGameData()
         startGame()
     }
     
@@ -104,20 +104,6 @@ class ViewController: UIViewController {
     func restartGame(){
         clearScreen()
         startGame()
-    }
-    
-    func loadGameData() {
-        // get data from user defaults
-        let defaults = UserDefaults.standard
-        // check for first launch
-        let curLevel = defaults.integer(forKey: "curLevel")
-        if (curLevel == 0){
-            gameManager.curLevel = 1
-        }else{
-            gameManager.curLevel = curLevel
-        }
-        gameManager.curScore = defaults.integer(forKey: "curScore")
-        gameManager.bestScore = defaults.integer(forKey: "bestScore")
     }
     
     func clearScreen(){

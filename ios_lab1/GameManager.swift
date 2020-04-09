@@ -20,6 +20,19 @@ class GameManager {
         self.bestScore = bestScore
     }
     
+    func loadGameData(){
+        let defaults = UserDefaults.standard
+        // check for first launch
+        let curLevel = defaults.integer(forKey: "curLevel")
+        if (curLevel == 0){
+            self.curLevel = 1
+        }else{
+            self.curLevel = curLevel
+        }
+        self.curScore = defaults.integer(forKey: "curScore")
+        self.bestScore = defaults.integer(forKey: "bestScore")
+    }
+    
     func save(){
         UserDefaults.standard.set(curScore, forKey: "curScore")
         UserDefaults.standard.set(curLevel, forKey: "curLevel")
